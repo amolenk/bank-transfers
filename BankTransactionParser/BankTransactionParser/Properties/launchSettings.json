@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BankTransactionParser": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\Sander\\Downloads\\transactions.txt"
+    }
+  }
+}
