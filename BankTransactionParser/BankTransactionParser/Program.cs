@@ -11,15 +11,6 @@ namespace BankTransactionParser
         {
             var transactions = LoadTransactions(args[0]);
 
-            //foreach (var transactionsByAccount in transactions.GroupBy(t => t.AccountNr))
-            //{
-            //    var path = Path.Combine(Path.GetDirectoryName(args[0]), transactionsByAccount.Key + ".csv");
-
-            //    Console.WriteLine("Writing {0}...", Path.GetFileName(path));
-
-            //    SaveTransactions(path, transactionsByAccount);
-            //}
-
             SaveTransactions(
                 Path.Combine(Path.GetDirectoryName(args[0]), "transactions.csv"),
                 transactions);

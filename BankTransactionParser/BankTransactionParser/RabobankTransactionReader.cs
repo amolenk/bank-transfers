@@ -13,6 +13,9 @@ namespace BankTransactionParser
         public RabobankTransactionReader(TextReader reader)
         {
             _reader = reader;
+
+            // Read header
+            _reader.ReadLine();
         }
 
         public Transaction ReadTransaction()
@@ -38,25 +41,11 @@ namespace BankTransactionParser
             var result = new Transaction
             {
                 AccountNr = columns[0],
-                Date = DateTime.ParseExact(columns[2], "yyyyMMdd", CultureInfo.InvariantCulture),
-                Amount = Convert.ToDecimal(columns[4], CultureInfo.InvariantCulture)
+                Date = DateTime.ParseExact(columns[4], "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                Amount = Convert.ToDecimal(columns[6], CultureInfo.GetCultureInfo("NL")),
+                Payee = columns[9],
+                Memo = columns[19]
             };
-
-            if (columns[6].Length > 0)
-            {
-                result.Payee = columns[6];
-                result.Memo = columns[10] + columns[11] + columns[12] + columns[13] + columns[14] + columns[15];
-            }
-            else
-            {
-                result.Payee = columns[10];
-                result.Memo = columns[11] + columns[12] + columns[13] + columns[14] + columns[15];
-            }
-
-            if (columns[3] == "D")
-            {
-                result.Amount *= -1;
-            }
 
             return result;
         }

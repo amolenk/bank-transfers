@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 
 namespace BankTransactionParser
@@ -17,11 +18,11 @@ namespace BankTransactionParser
             _writer.WriteLine(
                 "\"{0}\";{1};\"{2}\";\"{3}\";\"{4}\";{5}",
                 transaction.AccountNr,
-                transaction.Date,
+                transaction.Date.ToString(CultureInfo.GetCultureInfo("nl-NL")),
                 transaction.Payee,
                 transaction.Category,
                 transaction.Memo,
-                transaction.Amount);
+                transaction.Amount.ToString(CultureInfo.GetCultureInfo("nl-NL")));
         }
 
         public void Dispose()
