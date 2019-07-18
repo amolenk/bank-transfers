@@ -18,13 +18,32 @@ namespace BankTransactionParser
 
         private static IEnumerable<Transaction> LoadTransactions(string path)
         {
-            using (var reader = new RabobankTransactionReader(File.OpenText(path)))
-            {
+            var fileName = Path.GetFileName(path);
+            
+            ITransactionReader reader = null;
+
+            try
+            { 
+                if (fileName.StartsWith("CSV_O_"))
+                {
+                    Console.WriteLine("Detected Rabobank file.");
+                    reader = new RabobankTransactionReader(File.OpenText(path));
+                }
+                else
+                {
+                    Console.WriteLine("Detected ING file.");
+                    reader = new INGTransactionReader(File.OpenText(path));
+                }
+
                 Transaction transaction;
                 while ((transaction = reader.ReadTransaction()) != null)
                 {
                     yield return transaction;
                 }
+            }
+            finally
+            {
+                reader?.Dispose();
             }
         }
 

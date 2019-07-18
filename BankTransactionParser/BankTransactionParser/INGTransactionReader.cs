@@ -6,11 +6,11 @@ using System.Text;
 
 namespace BankTransactionParser
 {
-    public class RabobankTransactionReader : ITransactionReader
+    public class INGTransactionReader : ITransactionReader
     {
         private readonly CsvReader _reader;
 
-        public RabobankTransactionReader(TextReader reader)
+        public INGTransactionReader(TextReader reader)
         {
             _reader = new CsvReader(reader);
         }
@@ -33,13 +33,19 @@ namespace BankTransactionParser
 
         private Transaction CreateTransaction(IList<string> columns)
         {
+            var amount = Convert.ToDecimal(columns[6], CultureInfo.GetCultureInfo("NL"));
+            if (string.Equals(columns[5], "af", StringComparison.InvariantCultureIgnoreCase))
+            {
+                amount *= -1;
+            }
+            
             var result = new Transaction
             {
-                AccountNr = columns[0],
-                Date = DateTime.ParseExact(columns[4], "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                Amount = Convert.ToDecimal(columns[6], CultureInfo.GetCultureInfo("NL")),
-                Payee = columns[9],
-                Memo = columns[19]
+                AccountNr = columns[2],
+                Date = DateTime.ParseExact(columns[0], "yyyyMMdd", CultureInfo.InvariantCulture),
+                Amount = amount,
+                Payee = columns[1],
+                Memo = columns[8]
             };
 
             return result;
