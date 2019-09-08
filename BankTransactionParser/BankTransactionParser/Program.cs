@@ -9,7 +9,7 @@ namespace BankTransactionParser
     {
         static void Main(string[] args)
         {
-            var transactions = LoadTransactions(args[0]);
+           var transactions = LoadTransactions(args[0]);
 
             SaveTransactions(
                 Path.Combine(Path.GetDirectoryName(args[0]), "transactions.csv"),
@@ -20,6 +20,8 @@ namespace BankTransactionParser
         {
             var fileName = Path.GetFileName(path);
             
+            var result = new List<Transaction>();
+            var reverseResult = false;
             ITransactionReader reader = null;
 
             try
@@ -33,18 +35,26 @@ namespace BankTransactionParser
                 {
                     Console.WriteLine("Detected ING file.");
                     reader = new INGTransactionReader(File.OpenText(path));
+                    reverseResult = true;
                 }
 
                 Transaction transaction;
                 while ((transaction = reader.ReadTransaction()) != null)
                 {
-                    yield return transaction;
+                    result.Add(transaction);
                 }
             }
             finally
             {
                 reader?.Dispose();
             }
+
+            if (reverseResult)
+            {
+                result.Reverse();
+            }
+
+            return result;
         }
 
         private static void SaveTransactions(string path, IEnumerable<Transaction> transactions)
